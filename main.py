@@ -7,13 +7,8 @@ def mass(t):
     else:
         return 4
 
-print(mass(30))
-print(mass(5))
-print(mass(10))
-
 def engine_dir(t):
     return t
-    
 
 def velocity(t):
     k = 700
