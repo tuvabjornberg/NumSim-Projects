@@ -14,8 +14,8 @@ def test_mass_der():
 
 
 def test_engine_dir():
-    assert main.engine_dir(5, 10) == np.pi / 2
-    assert main.engine_dir(25, 30) == 25  # TODO: Stub in engine dir height >= 20
+    assert main.engine_dir(5, 0, 10) == np.pi / 2
+    assert main.engine_dir(25, 0, 30) == 25  # TODO: Stub in engine dir height >= 20
 
 
 def test_fuel_velocity():
