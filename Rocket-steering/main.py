@@ -3,32 +3,35 @@ import scipy
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 
+# Rocket constants
 g = 9.82
 c = 0.05
 k = 700
-
 burn_rate = 0.4
 initial_rocket_mass = 8
 initial_fuel_mass = 4
-t_max = initial_fuel_mass / burn_rate
 
-target_x = 80
-target_y = 60
-target = (target_x, target_y)
+# Time constants
+t_max = initial_fuel_mass / burn_rate
+t_span = (0, 10 + 1.0e-14)  # time intervall
+
+# Target constants
+norm_target = (80, 60)
 neg_target = (-40, 80)
 high_target = (20, 90)
 
-t_span = (0, 10 + 1.0e-14)  # time intervall
 initial_state = [0, 0, 0, 0]  # [x_pos, y_pos, x_velocity, y_velocity, mass]
 
 
+# Mass of the rocket with the burning of fuel in regards
 def mass(t):
-    if t <= t_max:  # 4 / 0.4
+    if t <= t_max:
         return initial_rocket_mass - burn_rate * t
     else:
         return initial_rocket_mass - initial_fuel_mass
 
 
+# Rate of which the mass changes, the fuel is consumed
 def mass_der(t):
     if t <= t_max:
         return -burn_rate
@@ -36,7 +39,8 @@ def mass_der(t):
         return 0
 
 
-# First strategy, only goos when rocket is to the left and below the target, and in the first quadrant
+# First strategy - only works when rocket is to the left and below the target,
+# and in the first quadrant
 def engine_dir_tan(t, state, target):
     x_pos, y_pos, vx, vy = state
     x_t, y_t = target
@@ -47,6 +51,9 @@ def engine_dir_tan(t, state, target):
         return angle + np.pi
 
 
+# Second strategy - simple implementation, just steer rocket continuously toward the target.
+# Corrected the calculation of the angle from 1st implementation, using arctan2 instead of tan.
+# Works in all quadrants now.
 def engine_dir_arctan(t, state, target):
     x_pos, y_pos, vx, vy = state
 
@@ -58,6 +65,9 @@ def engine_dir_arctan(t, state, target):
         return angle + np.pi
 
 
+# The third strategy - adjustment based on the distance between the rocket and its target
+# The distance is multiplied by 0.05, which is a magic number that was deduced through
+# trial and error
 def engine_dir_corrected(t, state, target):
     x_pos, y_pos, vx, vy = state
 
@@ -65,20 +75,24 @@ def engine_dir_corrected(t, state, target):
     dx = x_t - x_pos
     dy = y_t - y_pos
 
-    distance = np.sqrt(dx**2 + dy**2)
+    distance = np.sqrt(dx**2 + dy**2)  # distance to target
 
     if y_pos < 20:
         return -np.pi / 2
     else:
         angle = np.arctan2(dy, dx)
         if x_pos < x_t:
-            corrected_angle = angle / (distance * 0.05)
+            corrected_angle = angle / (
+                distance * 0.05
+            )  # 0.05 explanation in func desc.
         else:
             corrected_angle = angle + angle / (distance * 0.05)
 
         return corrected_angle + np.pi
 
 
+# The final strategy - the difference between the rocket's current direction
+# and the ideal direction is used to adjust the direction of the rocket
 def engine_dir(t, state, target):
     x_pos, y_pos, vx, vy = state
 
@@ -86,7 +100,7 @@ def engine_dir(t, state, target):
     dx = x_t - x_pos
     dy = y_t - y_pos
 
-    current_dir = np.arctan2(vy, vx)
+    current_dir = np.arctan2(vy, vx)  # direction of rocket
 
     if y_pos < 20:
         return -np.pi / 2
@@ -98,6 +112,7 @@ def engine_dir(t, state, target):
         return corrected_angle + np.pi
 
 
+# Function for calculating the velocity of the engine particles
 def fuel_velocity(t, state, target, steering_func):
     x_pos, y_pos, vx, vy = state
 
@@ -110,6 +125,7 @@ def fuel_velocity(t, state, target, steering_func):
         return np.array([vx, vy])
 
 
+# Function for calculating the external forces and their effect on the rocket
 def external_forces(t, v):
     m = mass(t)
     gravity_F = m * np.array([0, -g])  # Gravity vector: x, y direction
@@ -117,6 +133,7 @@ def external_forces(t, v):
     return gravity_F + air_res
 
 
+# Defining the system of equations
 def rocket_ODE(t, y, steering_func, target):
     x_pos, y_pos, vx, vy = y
 
@@ -133,6 +150,7 @@ def rocket_ODE(t, y, steering_func, target):
     return state_derivatives  # [x_pos, y_pos, x_velocity, y_velocity, m]
 
 
+# Runge-Kutta solver
 def RK4(f, tspan, u0, dt, *args):
     t_vec = np.arange(tspan[0], tspan[1] + 1.0e-14, dt)
     dt_vec = dt * np.ones_like(t_vec)
@@ -153,23 +171,28 @@ def RK4(f, tspan, u0, dt, *args):
 
 
 tt = np.arange(t_span[0], t_span[1], 0.1)
-sol_norm = solve_ivp(
-    rocket_ODE, t_span, initial_state, args=(engine_dir, target), t_eval=tt
-)
-t_norm, u_norm = RK4(rocket_ODE, t_span, initial_state, 0.1, engine_dir, target)
 
+# Target = (80, 60)
+sol_norm = solve_ivp(
+    rocket_ODE, t_span, initial_state, args=(engine_dir, norm_target), t_eval=tt
+)
+t_norm, u_norm = RK4(rocket_ODE, t_span, initial_state, 0.1, engine_dir, norm_target)
+
+# Target = (-40, 80)
 sol_neg = solve_ivp(
     rocket_ODE, t_span, initial_state, args=(engine_dir, neg_target), t_eval=tt
 )
 t_neg, u_neg = RK4(rocket_ODE, t_span, initial_state, 0.1, engine_dir, neg_target)
 
+# Target = (20, 80)
 sol_high = solve_ivp(
     rocket_ODE, t_span, initial_state, args=(engine_dir, high_target), t_eval=tt
 )
 t_high, u_high = RK4(rocket_ODE, t_span, initial_state, 0.1, engine_dir, high_target)
 
+# Target = (80, 60), with first iteration of steering function, to compare
 sol_arctan = solve_ivp(
-    rocket_ODE, t_span, initial_state, args=(engine_dir_arctan, target), t_eval=tt
+    rocket_ODE, t_span, initial_state, args=(engine_dir_arctan, norm_target), t_eval=tt
 )
 
 # --------- X-Y TO TIME AXIS ---------
@@ -185,7 +208,7 @@ sol_arctan = solve_ivp(
 
 # --------- X-Y POS AXES ---------
 plt.plot(sol_norm.y[0], sol_norm.y[1], label="Rocket normal")
-plt.plot(target_x, target_y, "ro", label="Target normal (80, 60)")
+plt.plot(norm_target[0], norm_target[1], "ro", label="Target normal (80, 60)")
 
 plt.plot(sol_neg.y[0], sol_neg.y[1], label="Rocket neg")
 plt.plot(neg_target[0], neg_target[1], "go", label="Target neg (-40, 80)")
