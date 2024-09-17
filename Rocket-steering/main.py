@@ -16,7 +16,7 @@ target_x = 80
 target_y = 60
 target = (target_x, target_y)
 
-t_span = (0, 10)  # time intervall
+t_span = (0, 10 + 1.0e-14)  # time intervall
 initial_state = [0, 0, 0, 0]  # [x_pos, y_pos, x_velocity, y_velocity, mass]
 
 
@@ -100,17 +100,19 @@ sol = solve_ivp(rocket_ODE, t_span, initial_state, args=(engine_dir,), t_eval=tt
 t, u = RK4(rocket_ODE, t_span, initial_state, 0.1, engine_dir)
 
 # --------- X-Y TO TIME AXIS ---------
-plt.plot(sol.t, sol.y[0], label="x position")
-plt.plot(sol.t, sol.y[1], label="y position")
-plt.title("Rocket steering")
-plt.xlabel("Position x ()")
-plt.ylabel("Position y ()")
-plt.grid()
-plt.legend()
-plt.show()
+# plt.plot(sol.t, sol.y[0], label="x position")
+# plt.plot(sol.t, sol.y[1], label="y position")
+# plt.title("Rocket steering")
+# plt.xlabel("Position x ()")
+# plt.ylabel("Position y ()")
+# plt.grid()
+# plt.legend()
+# plt.show()
+
 
 # --------- X-Y POS AXES ---------
-plt.plot(sol.y[0], sol.y[1])
+plt.plot(sol.y[0], sol.y[1], label="Rocket")
+plt.plot(target_x, target_y, "ro", label="Target")
 plt.title("Rocket steering - xy pos")
 plt.xlabel("Position x ()")
 plt.ylabel("Position y ()")
@@ -118,14 +120,17 @@ plt.xlim([-5, 100])
 plt.ylim([-5, 100])
 plt.grid()
 plt.prism()
+plt.legend()
 plt.show()
 
 # --------- RUNGEKUTTA ---------
-plt.plot(u[:, 0], u[:, 1])
+plt.plot(u[:, 0], u[:, 1], label="Rocket RK")
+plt.plot(target_x, target_y, "ro", label="Target")
 plt.title("Rocket steering - xy pos RUNGEKUTTA")
 plt.xlabel("Position x ()")
 plt.ylabel("Position y ()")
 plt.xlim([-5, 100])
 plt.ylim([-5, 100])
 plt.grid()
+plt.legend()
 plt.show()
