@@ -1,2 +1,3 @@
-# Rocket-steering
-Numeriska metoder och simulering - Projekt 1
+# Numeriska metoder och simulering 
+
+### Projekt 1 - Rocket-steering
