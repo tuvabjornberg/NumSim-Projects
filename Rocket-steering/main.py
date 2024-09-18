@@ -190,10 +190,14 @@ sol_high = solve_ivp(
 )
 t_high, u_high = RK4(rocket_ODE, t_span, initial_state, 0.1, engine_dir, high_target)
 
-# Target = (80, 60), with first iteration of steering function, to compare
+# Target = (80, 60), with first iteration of steering function, to compare (arctan)
 sol_arctan = solve_ivp(
     rocket_ODE, t_span, initial_state, args=(engine_dir_arctan, norm_target), t_eval=tt
 )
+t_arctan, u_arctan = RK4(
+    rocket_ODE, t_span, initial_state, 0.1, engine_dir_arctan, norm_target
+)
+
 
 # --------- X-Y TO TIME AXIS ---------
 # plt.plot(sol.t, sol.y[0], label="x position")
@@ -207,41 +211,40 @@ sol_arctan = solve_ivp(
 
 
 # --------- X-Y POS AXES ---------
-plt.plot(sol_norm.y[0], sol_norm.y[1], label="Rocket normal")
+plt.plot(sol_norm.y[0], sol_norm.y[1], "r", label="Rocket normal")
 plt.plot(norm_target[0], norm_target[1], "ro", label="Target normal (80, 60)")
 
-plt.plot(sol_neg.y[0], sol_neg.y[1], label="Rocket neg")
+plt.plot(sol_neg.y[0], sol_neg.y[1], "g", label="Rocket neg")
 plt.plot(neg_target[0], neg_target[1], "go", label="Target neg (-40, 80)")
 
-plt.plot(sol_high.y[0], sol_high.y[1], label="Rocket high")
+plt.plot(sol_high.y[0], sol_high.y[1], "y", label="Rocket high")
 plt.plot(high_target[0], high_target[1], "yo", label="Target high(-40, 90)")
 
-plt.plot(sol_arctan.y[0], sol_arctan.y[1], label="Rocket old arctan")
+plt.plot(sol_arctan.y[0], sol_arctan.y[1], "b", label="Rocket old arctan")
 
 plt.title("Rocket steering - xy pos")
-plt.xlabel("Position x ()")
-plt.ylabel("Position y ()")
-# plt.xlim([-5, 100])
-# plt.ylim([-5, 100])
+plt.xlabel("Position x")
+plt.ylabel("Position y")
 plt.grid()
 plt.prism()
 plt.legend()
 plt.show()
 
 # --------- RUNGEKUTTA ---------
-plt.plot(u_norm[:, 0], u_norm[:, 1], label="Rocket RK normal")
-plt.plot(target_x, target_y, "ro", label="Target normal (80, 60)")
+plt.plot(u_norm[:, 0], u_norm[:, 1], "r", label="Rocket RK normal")
+plt.plot(norm_target[0], norm_target[1], "ro", label="Target normal (80, 60)")
 
-plt.plot(u_neg[:, 0], u_neg[:, 1], label="Rocket RK neg")
+plt.plot(u_neg[:, 0], u_neg[:, 1], "g", label="Rocket RK neg")
 plt.plot(neg_target[0], neg_target[1], "go", label="Target neg (-40, 80)")
 
-plt.plot(u_high[:, 0], u_high[:, 1], label="Rocket RK high")
+plt.plot(u_high[:, 0], u_high[:, 1], "y", label="Rocket RK high")
 plt.plot(high_target[0], high_target[1], "yo", label="Target (-40, 90)")
+
+plt.plot(u_arctan[:, 0], u_arctan[:, 1], "b", label="Rocket old arctan")
+
 plt.title("Rocket steering - xy pos RUNGEKUTTA")
-plt.xlabel("Position x ()")
-plt.ylabel("Position y ()")
-# plt.xlim([-5, 100])
-# plt.ylim([-5, 100])
+plt.xlabel("Position x")
+plt.ylabel("Position y")
 plt.grid()
 plt.legend()
 plt.show()
