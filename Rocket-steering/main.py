@@ -20,7 +20,7 @@ norm_target = (80, 60)
 neg_target = (-40, 80)
 high_target = (20, 90)
 
-initial_state = [0, 0, 0, 0]  # [x_pos, y_pos, x_velocity, y_velocity, mass]
+initial_state = [0, 0, 0, 0]  # [x_pos, y_pos, x_velocity, y_velocity]
 
 
 # Mass of the rocket with the burning of fuel in regards
@@ -147,7 +147,7 @@ def rocket_ODE(t, y, steering_func, target):
     acc = total_force / m
 
     state_derivatives = [vx, vy, acc[0], acc[1]]
-    return state_derivatives  # [x_pos, y_pos, x_velocity, y_velocity, m]
+    return state_derivatives  # is derived to [x_pos, y_pos, x_velocity, y_velocity]
 
 
 # Runge-Kutta solver
