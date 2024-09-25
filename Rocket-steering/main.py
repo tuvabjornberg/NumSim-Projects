@@ -137,6 +137,8 @@ def external_forces(t, v):
 def rocket_ODE(t, y, steering_func, target):
     x_pos, y_pos, vx, vy = y
 
+    if (y_pos < 0): return 0
+
     m = mass(t)
     v = np.array([vx, vy])
 
