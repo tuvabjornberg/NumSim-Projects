@@ -174,6 +174,12 @@ for i in range(5):
     plt.plot(t, X[:, 5], "y")
     plt.plot(t, X[:, 6], "tab:pink")
 
+total_population = X[:, 0] + X[:, 1] + X[:, 2] + X[:, 3] + X[:, 4] + X[:, 5] + X[:, 6]
+
+# Plot to check if total population remains constant
+plt.plot(t, total_population, label="Total Population")
+plt.axhline(y=N, color="r", linestyle="--", label="Expected N=1000")
+
 plt.plot(t, X[:, 0], "b", label="Susceptible")
 plt.plot(t, X[:, 1], "g", label="Exposed")
 plt.plot(t, X[:, 2], "r", label="Infected")
