@@ -10,7 +10,7 @@ gamma = 1 / 7
 N = 1000
 infected = 5
 recovered = 0
-initial = [N - infected, infected, recovered]  # ?
+initial = [N - infected, infected, recovered] 
 
 t0 = 0
 t1 = 120
@@ -23,7 +23,9 @@ alpha = 0.5
 # ---------------- ASSIGNMENT 3 ------ SEIRD MODEL ---------------------
 dead = 0
 my = 0.01
-initial = [N - infected, exposed, infected, recovered, dead]
+
+initial_sum = exposed + infected + recovered + dead 
+initial = [N - initial_sum, exposed, infected, recovered, dead]
 
 
 # ODE solver, determenistic
@@ -56,7 +58,7 @@ plt.show()
 
 
 # Gillespie, stochastic
-initial = (N - infected, exposed, infected, recovered, dead)
+initial = (N - initial_sum, exposed, infected, recovered, dead)
 coeff = (beta, gamma, alpha, my)
 
 

@@ -10,7 +10,9 @@ gamma = 1 / 7
 N = 1000
 infected = 5
 recovered = 0
-initial = [N - infected, infected, recovered]  # ?
+
+initial_sum = infected + recovered
+initial = [N - initial_sum, infected, recovered]
 
 t0 = 0
 t1 = 120
@@ -43,7 +45,7 @@ plt.legend()
 plt.show()
 
 # Gillespie, stochastic
-initial = (N - infected, infected, 0)
+initial = (N - initial_sum, infected, recovered)
 coeff = (beta, gamma)
 
 

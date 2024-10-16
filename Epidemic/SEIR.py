@@ -10,7 +10,7 @@ gamma = 1 / 7
 N = 1000
 infected = 5
 recovered = 0
-initial = [N - infected, infected, recovered]  # ?
+initial = [N - infected, infected, recovered]
 
 t0 = 0
 t1 = 120
@@ -20,7 +20,9 @@ t_span = [t0, t1]
 
 exposed = 0
 alpha = 0.5
-initial = [N - infected, exposed, infected, recovered]
+
+initial_sum = exposed + infected + recovered
+initial = [N - initial_sum, exposed, infected, recovered]
 
 
 # ODE solver, determenistic
@@ -51,7 +53,7 @@ plt.show()
 
 
 # Gillespie, stochastic
-initial = (N - infected, exposed, infected, recovered)
+initial = (N - initial_sum, exposed, infected, recovered)
 coeff = (beta, gamma, alpha)
 
 

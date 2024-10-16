@@ -8,23 +8,23 @@ beta = 0.3
 gamma = 1 / 7
 
 N = 1000
-infected = 5
-recovered = 0
+infected = 5  # Initial
+recovered = 0  # Initial
 
 t0 = 0
 t1 = 120
 t_span = [t0, t1]
 
 # From SEIR
-exposed = 0
+exposed = 0  # Inital
 alpha = 0.5
 
 # From SEIRD
-dead = 0
+dead = 0  # Initial
 my = 0.01
 
 # From SERIDV
-vaccinated = 0
+vaccinated = 0  # Initial
 vax_rate = 3
 
 
@@ -42,19 +42,22 @@ def ODE_SEIRDV(t, y):
     return np.array([s_p, e_p, i_p, r_p, d_p, v_p])
 
 
-initial_SEIRDV = [N - infected, exposed, infected, recovered, dead, vaccinated]
+initial_sum = exposed + infected + recovered + dead + vaccinated
+initial_SEIRDV = [N - initial_sum, exposed, infected, recovered, dead, vaccinated]
 t_eval = np.arange(t_span[0], t_span[1], 0.1)
 
-sol_SEIRDV = solve_ivp(ODE_SEIRDV, t_span, initial_SEIRDV, t_eval=t_eval)
+#sol_SEIRDV = solve_ivp(ODE_SEIRDV, t_span, initial_SEIRDV, t_eval=t_eval)
 
 # ---------------- ASSIGNMENT 5 ------ EGEN SMITTSPRIDNINGSMODELL ---------------------
 
 delta = 0.5  # rate av R -> S
-epsilon = 0.94  # protection rate
+epsilon = 0.94  # vaccine protection rate
 zeta = 0.3  # rate av R -> Im
 second_dose_rate = 5
-immune = 0
-initial = [N - infected, exposed, infected, recovered, dead, vaccinated, immune]
+immune = 0  # Initial
+
+initial_sum = exposed + infected + recovered + dead + vaccinated + immune
+initial = [N - initial_sum, exposed, infected, recovered, dead, vaccinated, immune]
 
 
 # ODE solver, determenistic
@@ -74,6 +77,7 @@ def ODE_5(t, y):
 
 t_eval = np.arange(t_span[0], t_span[1], 0.1)
 
+'''
 sol = solve_ivp(ODE_5, t_span, initial, t_eval=t_eval)
 
 s, e, i, r, d, v, im = sol.y
@@ -104,10 +108,10 @@ plt.ylabel("number of people")
 plt.title("Uppgift 5, Egen Vaccination-model solve_ivp")
 plt.legend()
 plt.show()
-
+'''
 
 # Gillespie, stochastic
-initial = (N - infected, exposed, infected, recovered, dead, vaccinated, immune)
+initial = (N - initial_sum, exposed, infected, recovered, dead, vaccinated, immune)
 coeff = (beta, gamma, alpha, my, vax_rate, delta, epsilon, second_dose_rate, zeta)
 
 
