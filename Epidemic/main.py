@@ -46,7 +46,7 @@ initial_sum = exposed + infected + recovered + dead + vaccinated
 initial_SEIRDV = [N - initial_sum, exposed, infected, recovered, dead, vaccinated]
 t_eval = np.arange(t_span[0], t_span[1], 0.1)
 
-#sol_SEIRDV = solve_ivp(ODE_SEIRDV, t_span, initial_SEIRDV, t_eval=t_eval)
+sol_SEIRDV = solve_ivp(ODE_SEIRDV, t_span, initial_SEIRDV, t_eval=t_eval)
 
 # ---------------- ASSIGNMENT 5 ------ EGEN SMITTSPRIDNINGSMODELL ---------------------
 
@@ -77,7 +77,7 @@ def ODE_5(t, y):
 
 t_eval = np.arange(t_span[0], t_span[1], 0.1)
 
-'''
+
 sol = solve_ivp(ODE_5, t_span, initial, t_eval=t_eval)
 
 s, e, i, r, d, v, im = sol.y
@@ -108,7 +108,7 @@ plt.ylabel("number of people")
 plt.title("Uppgift 5, Egen Vaccination-model solve_ivp")
 plt.legend()
 plt.show()
-'''
+
 
 # Gillespie, stochastic
 initial = (N - initial_sum, exposed, infected, recovered, dead, vaccinated, immune)
