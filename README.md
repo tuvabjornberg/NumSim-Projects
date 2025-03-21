@@ -1,3 +1,7 @@
 # Numeriska metoder och simulering 
 
 ### Projekt 1 - Rocket-steering
+This project explores the control of an unmanned rocket towards a designated target using numerical methods and simulations. A mathematical model is developed to account for forces such as gravity, air resistance, and thrust from expelled fuel. Control strategies for adjusting the rocket's direction are implemented and tested, using both Python’s `solve_ivp` function and a custom Runge-Kutta solver. The final strategy optimizes trajectory correction based on real-time positional adjustments. Simulations with different target positions demonstrate the effectiveness of the approach, providing insights into trajectory optimization for fuel-limited rockets.
+
+### Projekt 2 - Epidemic modeling
+This project examines epidemic modeling using numerical simulations. Several models, including SIR, SEIR, and SEIRD, are implemented to study disease spread under different conditions. Additionally, a vaccination model and a custom model incorporating permanent immunity are explored. Both deterministic (ODE-based) and stochastic (Gillespie algorithm) methods are used to assess the role of randomness in disease progression. The models analyzes infection rates, recovery times, and vaccination effectiveness. Results show the impact of vaccination and social distancing on epidemic outcomes, providing insights into effective disease control strategies.
